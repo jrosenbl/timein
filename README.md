@@ -2,7 +2,7 @@
 simple CLI to display time in another timezone.
 
 # usage:  
-timein.R [<abbreviation> | ? ]
+timein.R [ \<abbreviation> | ? ]
 
 # example:  
 $ timein.R  
