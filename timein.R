@@ -11,35 +11,41 @@ timeDirection <- function(difft) {
 }
 
 make_tztab <- function(tzlist) {
-    loc = sapply(strsplit(tzlist,','), function(x) x[[1]])
-    tz = sapply(strsplit(tzlist,','), function(x) x[[2]])
-    return(data.table(loc=loc, tz=tz))
+    abbr = sapply(strsplit(tzlist,","), function(x) x[[1]])
+    tz = sapply(strsplit(tzlist,","), function(x) x[[2]])
+    return(data.table(abbr=abbr, tz=tz, key="abbr"))
 }    
 #'
-#' add new zone abbreviations here
-tzlist = c("ca,US/Pacific",
-           "ny,US/Eastern",
-           "co,US/Mountain",
-           "dub,Europe/Dublin",
-           "lon,Europe/London",
-           "zur,Europe/Zurich",
-           "syd,Australia/Sydney",
-           "man,Singapore",
-           "mad,Europe/Madrid",
-           "rom,Europe/Rome",
-           "ber,Europe/Berlin",
-           "ams,Europe/Amsterdam",
-           "hkg,Hongkong",
-           "ice,Iceland")
-    
-mytz <- make_tztab(tzlist)
-setkey(mytz, loc)
+#' add new zone abbreviations (cities or states) here.
+#' map to OlsonNames()
+tzlist = c(
+    "ams,Europe/Amsterdam",
+    "ber,Europe/Berlin",
+    "ca,US/Pacific",
+    "co,US/Mountain",
+    "dub,Europe/Dublin",
+    "hfa,Israel",
+    "hkg,Hongkong",
+    "ice,Iceland",
+    "lon,Europe/London",
+    "mad,Europe/Madrid",
+    "man,Singapore",
+    "ny,US/Eastern",
+    "par,Europe/Paris",
+    "rom,Europe/Rome",
+    "syd,Australia/Sydney",
+    "zur,Europe/Zurich")
 
+mytz <- make_tztab(tzlist)
 here <- now()
 cat("date/time:", sprintf("%s",here), "\n")
 
 args = commandArgs(trailingOnly=T)
 if (length(args) > 0) {
+    if (args[1] == "?") {
+        print(mytz)
+        quit(save="no", status=0, runLast=FALSE)
+    }
     otherZone = mytz[args[1],tz]
     if (is.na(otherZone)) {
         stop('invalid timezone ', args[1])
